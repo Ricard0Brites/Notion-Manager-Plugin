@@ -6,6 +6,9 @@ const { SingleTextField, SingleSelectField, NumberField } = require('./DataTypes
 const { UpdatePage } = require("./Statics.js");
 const CryptoDataFetcher = require("./CryptoFetch.js");
 
+const FIATTableSymbol = "FIAT";
+const CryptoTableSymbol = "Crypto";
+
 // Initialize Notion client
 const notion = new Client({ auth: process.env.NOTION_SECRET_KEY });
 (
@@ -16,20 +19,20 @@ async () =>
         //#region Crypto
 
             //#region Query Crypto Values in the provided Database
-            const response = await notion.databases.query
+            const CryptoResponse = await notion.databases.query
             ({
                 database_id: process.env.CRYPTO_DATABASE_ID,
                 filter: 
                 {
                     property: 'Category',
-                    select: {equals: 'Crypto'}
+                    select: {equals: CryptoTableSymbol}
                 }
             });
             //#endregion
 
             //#region Extract the symbols from the result query
             const CryptoSymbolsToLookFor = [];
-            for(Entry of response.results)
+            for(Entry of CryptoResponse.results)
             {
                 const SymbolToAdd = Entry.properties.Symbol.select.name;
                 CryptoSymbolsToLookFor.push({Symbol : SymbolToAdd, Data: Entry});
