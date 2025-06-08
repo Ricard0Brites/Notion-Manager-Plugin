@@ -6,13 +6,13 @@
 
     function SingleTextField(FieldName, NewText) 
     {
-        if(FieldName === "" || NewText === "")
+        if(FieldName == null || NewText == null)
             return{};
 
         return {
             [FieldName]: 
             {
-                title: 
+                title:
                 [
                     {
                         text: 
@@ -43,7 +43,7 @@
 
     function NumberField(FieldName, NewValue) 
     {
-        if(FieldName === "" || NewValue === "")
+        if(FieldName == null || NewValue == null)
             return{};
 
         return {
