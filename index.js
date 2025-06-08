@@ -32,7 +32,7 @@ async () =>
                 //#region Query Crypto Values in the provided Database
                 const CryptoResponse = await notion.databases.query
                 ({
-                    database_id: process.env.CRYPTO_DATABASE_ID,
+                    database_id: process.env.DATABASE_ID,
                     filter: 
                     {
                         property: 'Category',
@@ -128,7 +128,7 @@ async () =>
             //#region Query FIAT Values in the provided Database In Notion
             const FIATResponse = await notion.databases.query
             ({
-                database_id: process.env.CRYPTO_DATABASE_ID,
+                database_id: process.env.DATABASE_ID,
                 filter: 
                 {
                     property: 'Category',
