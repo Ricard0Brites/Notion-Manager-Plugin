@@ -6,7 +6,6 @@ const { SingleTextField, SingleSelectField, NumberField } = require('./DataTypes
 const { UpdatePage } = require("./Statics.js");
 const CryptoDataFetcher = require("./CryptoFetch.js");
 const { default: axios } = require('axios');
-const { ApplicationError, NotFoundError, ForbiddenError} = require('error-lib');
 
 //#region FIAT Init Data
 const FIATTableSymbol = 'FIAT';
