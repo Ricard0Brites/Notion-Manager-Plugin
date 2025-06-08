@@ -1,10 +1,9 @@
 require('dotenv').config();
-require('./CryptoFetch.js');
 const { Client } = require('@notionhq/client');
-const MakeCurrencyTableEntryLiteral = require('./Table_Formats/CurrencyTableFormat.js');
-const { SingleTextField, SingleSelectField, NumberField } = require('./DataTypes.js');
-const { UpdatePage } = require("./Statics.js");
-const CryptoDataFetcher = require("./CryptoFetch.js");
+const MakeCurrencyTableEntryLiteral = require('./src/Table_Formats/CurrencyTableFormat.js');
+const { SingleTextField, SingleSelectField, NumberField } = require('./src/DataTypes.js');
+const { UpdatePage } = require("./src/Statics.js");
+const CryptoDataFetcher = require("./src/CryptoFetch.js");
 const { default: axios } = require('axios');
 
 //#region FIAT Init Data
