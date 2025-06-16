@@ -63,9 +63,11 @@ async function UpdatePLView(notion)
                         const Symbol = Response.data.properties.Symbol.select.name;
                         const OpenValue = CurrencyData[Symbol];
                         const BuyValue = Entry.properties['Buy Price'].number;
-                        const ROI = (OpenValue / BuyValue) - 1;
+                        const Fee = Entry.properties.Fees.number;
+                        const ROI = ((OpenValue - Fee) / BuyValue) - 1;
                         const InvestmentAmount = Entry.properties['Investment Amount'].number;
 
+                        console.log(Fee);
                         OrganizedData[Category].Value += (ROI * InvestmentAmount);
                         OrganizedData[Category].Data.push(Entry);
                     }
@@ -100,7 +102,7 @@ async function UpdatePLView(notion)
             //#region ROI
             {
                 var ROI = 0;
-                var CumulativeInvestment = 0, CumulativeReturn = 0;
+                var CumulativeInvestment = 0, CumulativeReturn = 0, CumulativeFees = 0;
                 for(var Position of OrganizedData.Closed.Data)
                 {
                     var SellPrice = Position.properties['Sell Price'].number;
@@ -120,6 +122,7 @@ async function UpdatePLView(notion)
 
                     CumulativeInvestment += BuyPrice;
                     CumulativeReturn += SellPrice;
+                    CumulativeFees += Position.properties.Fees.number;
                 }
 
                 for(var Position of OrganizedData.Open.Data)
@@ -154,9 +157,10 @@ async function UpdatePLView(notion)
 
                     CumulativeInvestment += BuyPrice;
                     CumulativeReturn += SellPrice;
+                    CumulativeFees += Position.properties.Fees.number;
                 }
                 if(CumulativeInvestment != 0)
-                    ROI = (CumulativeReturn / CumulativeInvestment) - 1;
+                    ROI = ((CumulativeReturn - CumulativeFees) / CumulativeInvestment) - 1;
                 
                 if(process.env.log == 1)
                 {
