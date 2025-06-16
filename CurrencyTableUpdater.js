@@ -1,29 +1,29 @@
 require('dotenv').config();
-const { Client } = require('@notionhq/client');
 const MakeCurrencyTableEntryLiteral = require('./src/Table_Formats/CurrencyTableFormat.js');
 const { SingleTextField, SingleSelectField, NumberField } = require('./src/DataTypes.js');
-const { UpdatePage } = require("./src/Statics.js");
+const { UpdatePage, ApplicationStatics} = require("./src/Statics.js");
 const CryptoDataFetcher = require("./src/CryptoFetch.js");
 const { default: axios } = require('axios');
 
-//#region FIAT Init Data
-const FIATTableSymbol = 'FIAT';
-const FIAT_API_Link = 'https://api.frankfurter.app/latest';
-const FIAT_API_FullName_Link = 'https://api.frankfurter.dev/v1/currencies'
-const REFERENCE_CURRENCY = 'USD'; //TODO - Get This Dynamically?
-//#endregion
-
-//#region Crypto Init Data
-const CryptoTableSymbol = 'Crypto';
-//#endregion
-
-// Initialize Notion client
-const notion = new Client({ auth: process.env.NOTION_SECRET_KEY });
-(
-async () => 
+async function UpdateCurrencyTable(notion)
 {
-    try 
+    //#region FIAT Init Data
+    const FIATTableSymbol = 'FIAT';
+    const FIAT_API_Link = 'https://api.frankfurter.app/latest';
+    const FIAT_API_FullName_Link = 'https://api.frankfurter.dev/v1/currencies'
+    const REFERENCE_CURRENCY = 'USD'; //TODO - Get This Dynamically?
+    //#endregion
+
+    //#region Crypto Init Data
+    const CryptoTableSymbol = 'Crypto';
+    //#endregion
+
+    
+    try
     {
+        //Static currency data to update (to keep local so we dont have to send unnecessary notion API requests)
+        var CurrencyData = ApplicationStatics.GetCurrencyData();
+
         if(process.env.ENABLE_CRYPTO == 1)
         {
             //#region Crypto
@@ -31,7 +31,7 @@ async () =>
                 //#region Query Crypto Values in the provided Database
                 const CryptoResponse = await notion.databases.query
                 ({
-                    database_id: process.env.DATABASE_ID,
+                    database_id: process.env.CURRENCY_DATABASE_ID,
                     filter: 
                     {
                         property: 'Category',
@@ -109,25 +109,25 @@ async () =>
                             SingleSelectField(Keys[2], Category),// category
                             NumberField(Keys[3], NewValue) // Value
                         );
-                        if(process.env.LOG == true)
+                        if(process.env.LOG == 1)
                             console.log(UpdatedEntry);
+                        
+                        CurrencyData[Symbol] = NewValue;
 
-                        console.log(UpdatedEntry);
 
-                       await UpdatePage(notion, PageID, UpdatedEntry);
+                        await UpdatePage(notion, PageID, UpdatedEntry);
                     }
                 }
                 //#endregion
             //#endregion Crypto
         }
-            
 
         if(process.env.ENABLE_FIAT == 1)
         {
             //#region Query FIAT Values in the provided Database In Notion
             const FIATResponse = await notion.databases.query
             ({
-                database_id: process.env.DATABASE_ID,
+                database_id: process.env.CURRENCY_DATABASE_ID,
                 filter: 
                 {
                     property: 'Category',
@@ -184,7 +184,7 @@ async () =>
                     console.log('Failed Notion Table Column Fetch Attempt.');
                 
                 Category = PageData.properties[NotionTableColumnNames[2]].select.name;
-             
+            
                 const UpdatedEntry = MakeCurrencyTableEntryLiteral
                 (
                     SingleTextField(NotionTableColumnNames[0], LongName), // long name
@@ -193,15 +193,22 @@ async () =>
                     NumberField(NotionTableColumnNames[3], Value) // Value
                 );
 
+                CurrencyData[Symbol] = Value;
+
                 await UpdatePage(notion, PageID, UpdatedEntry);
             }
             
         //#endregion   
         }
+
+        ApplicationStatics.SetCurrencyData(CurrencyData);
     } 
     catch (error) 
     {
         if(process.env.LOG == 1)
             console.error('Error connecting to Notion API:', error.message);
-    }
-})();
+    };
+}
+
+
+module.exports = UpdateCurrencyTable;
