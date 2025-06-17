@@ -14,7 +14,7 @@ async function Main()
         if(process.env.UPDATE_CURRENCY_TABLE == 1)
             await UpdateCurrencyTable(notion);
         
-        if(process.env.UPDATE_PL_TABLE)
+        if(process.env.UPDATE_PL_TABLE == 1)
             await UpdatePLTable(notion);
 
     }catch(err)
