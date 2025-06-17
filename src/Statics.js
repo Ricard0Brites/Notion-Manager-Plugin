@@ -1,8 +1,8 @@
 require('dotenv').config();
+const { default: axios } = require('axios');
 
 async function UpdatePage(notion, PageID, Update) 
 {
-    MaxRetryAmount = 20;
     try
     {        
         await notion.pages.update
@@ -14,9 +14,9 @@ async function UpdatePage(notion, PageID, Update)
         );
 
         console.log(Update);
-    } catch (err)
+    } 
+    catch (err)
     {
-        //await new Promise(r => setTimeout(r, 500));
         console.log(err);
     } 
 
@@ -25,19 +25,20 @@ async function UpdatePage(notion, PageID, Update)
 
 class ApplicationStatics
 {
-    //Currency Data
+    //#region Currency Data
     static CurrencyData = {};
 
     static SetCurrencyData(NewData) { this.CurrencyData = NewData; }
     static GetCurrencyData() 
     {
-        if(process.env.ENABLE_CRYPTO == 1 && process.env.ENABLE_FIAT == 1)
+        if(Object.keys(this.CurrencyData).length > 0)
             return this.CurrencyData;
 
+        //Returns these values if in debug mode
         var DebugObject = 
         {
             USDC: 1,
-            BTC: 150000,
+            BTC: 106973.41257,
             EUR: 0.86866,
             USD: 1,
             CAD: 1.3629,
@@ -48,8 +49,70 @@ class ApplicationStatics
 
         return DebugObject;
     }
+    //#endregion
 
 
 }
 
-module.exports = {UpdatePage, ApplicationStatics};
+class NotionDataReader
+{   
+    static GetDataFromNumberField(DataIn)
+    {
+        if(!DataIn)
+            return null;
+
+        if(DataIn.type === 'number')
+            return DataIn.number;
+
+        return null;
+    }
+
+    static GetDataFromSingleSelectField(DataIn)
+    {
+        if(!DataIn)
+            return null;
+
+        if(DataIn.type === 'select')
+            return DataIn.select.name;
+
+        return null;
+    }
+
+    static GetDataFromSingleTextField(DataIn)
+    {
+        if(!DataIn)
+            return null;
+
+        if(DataIn.type === 'title')
+            return DataIn.title[0].plain_text;
+        
+        return null;
+    }
+
+    static async GetDataFromRelationField(PageID)
+    {
+        if(!PageID)
+            return null;
+
+        try
+        {
+            const Response = await axios.get(`https://api.notion.com/v1/pages/${PageID}`, 
+            {
+                headers: 
+                {
+                'Authorization': `Bearer ${process.env.NOTION_SECRET_KEY}`,
+                'Notion-Version': process.env.NOTION_VERSION,
+                'Content-Type': 'application/json'
+                }
+            });
+            return Response.data;
+        }
+        catch(Error)
+        {
+            if(process.env.log == 1)
+                console.log(Error);
+        }
+    }
+}
+
+module.exports = {UpdatePage, ApplicationStatics, NotionDataReader};
