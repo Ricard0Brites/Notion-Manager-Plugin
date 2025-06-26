@@ -22,7 +22,36 @@ async function UpdatePage(notion, PageID, Update)
 
 }
 
+//Does Not Take Filter Parameters
 
+async function RequestDatabase(notion, DatabaseID, Filter)
+{
+    try
+    {
+        if(!notion)
+        {
+            if(process.env.LOG)
+                console.log('notion variable is invalid at: ' + __filename);
+
+            return null;
+        }
+        
+        const NotionResponse = await notion.databases.query
+        ({
+            database_id: DatabaseID,
+            filter: Filter
+        });
+        
+        return NotionResponse;
+    }
+    catch(error)
+    {
+        if(process.env.LOG)
+            console.log(error);
+        
+        return null;
+    }
+}
 class ApplicationStatics
 {
     //#region Currency Data
@@ -115,4 +144,4 @@ class NotionDataReader
     }
 }
 
-module.exports = {UpdatePage, ApplicationStatics, NotionDataReader};
+module.exports = {UpdatePage, ApplicationStatics, NotionDataReader, RequestDatabase};

@@ -1,9 +1,11 @@
 require('dotenv').config();
 const MakeCurrencyTableEntryLiteral = require('./src/Table_Formats/CurrencyTableFormat.js');
 const { SingleTextField, SingleSelectField, NumberField } = require('./src/DataTypes.js');
-const { UpdatePage, ApplicationStatics} = require("./src/Statics.js");
+const { UpdatePage, ApplicationStatics, RequestDatabase} = require("./src/Statics.js");
 const CryptoDataFetcher = require("./src/CryptoFetch.js");
 const { default: axios } = require('axios');
+
+//TODO @RicardoBrites - Refactor this to be in a class (Adds clarity, ease of debug, and extendability)
 
 async function UpdateCurrencyTable(notion)
 {
@@ -29,15 +31,8 @@ async function UpdateCurrencyTable(notion)
             //#region Crypto
 
                 //#region Query Crypto Values in the provided Database
-                const CryptoResponse = await notion.databases.query
-                ({
-                    database_id: process.env.CURRENCY_DATABASE_ID,
-                    filter: 
-                    {
-                        property: 'Category',
-                        select: {equals: CryptoTableSymbol}
-                    }
-                });
+                const QueryFilter = {property: 'Category',select: {equals: CryptoTableSymbol}};
+                const CryptoResponse = await RequestDatabase(notion, process.env.CURRENCY_DATABASE_ID, QueryFilter);
                 //#endregion
 
                 //#region Extract the symbols from the result query
@@ -125,15 +120,10 @@ async function UpdateCurrencyTable(notion)
         if(process.env.ENABLE_FIAT == 1)
         {
             //#region Query FIAT Values in the provided Database In Notion
-            const FIATResponse = await notion.databases.query
-            ({
-                database_id: process.env.CURRENCY_DATABASE_ID,
-                filter: 
-                {
-                    property: 'Category',
-                    select: {equals: FIATTableSymbol}
-                }
-            });
+
+            const QueryFilter = {property: 'Category',select: {equals: FIATTableSymbol}};
+            const FIATResponse = await RequestDatabase(notion, process.env.CURRENCY_DATABASE_ID, QueryFilter);
+
             //#endregion
             const FIAT_Rates = await axios.get(FIAT_API_Link, 
             {
