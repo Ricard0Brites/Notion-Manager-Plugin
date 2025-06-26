@@ -1,4 +1,4 @@
-const { UpdatePage, ApplicationStatics, NotionDataReader} = require("./src/Statics.js");
+const { UpdatePage, ApplicationStatics, NotionDataReader, RequestDatabase } = require("./src/Statics.js");
 const { SingleTextField, SingleSelectField, NumberField } = require('./src/DataTypes.js');
 const { default: axios } = require('axios');
 
@@ -152,15 +152,11 @@ class ProfitAndLossTableUpdater
         try
         {
             //#region Get Database From Notion
-            const NotionResponse_PL = await notion.databases.query
-            ({
-                database_id: process.env.PL_DATABASE_ID,
-            });
 
-            const NotionResponse_Investments = await notion.databases.query
-            ({
-                database_id: process.env.INVESTMENTS_TABLE_ID,
-            });
+            const NotionResponse_PL = await RequestDatabase(notion, process.env.PL_DATABASE_ID);
+            
+            const NotionResponse_Investments = await RequestDatabase(notion, process.env.INVESTMENTS_TABLE_ID);
+            
             //#endregion         
 
             //Fill Queues
