@@ -142,6 +142,9 @@ class ProfitAndLossTableUpdater
 
     async UpdatePLTable(notion)
     {
+        if(process.env.ENABLE_FIAT !=1 )
+            return;
+
         if(notion == null)
             return;
 
