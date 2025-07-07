@@ -89,9 +89,9 @@ class ProfitAndLossTableUpdater
 
         for(var OpenPosition of this.Q_OpenPositions)
         {
-            const Page_ID = OpenPosition.properties.Investment.relation[0].id; // Current Database Entry ID
+            const Page_ID = OpenPosition.properties.Investment; // Current Database Entry ID
             const RelationData = await NotionDataReader.GetDataFromRelationField(Page_ID); // Get Page This Relation field relates to
-            const Symbol = NotionDataReader.GetDataFromSingleSelectField(RelationData.properties.Symbol); // Get the symbol of the investment (to get its' live price)
+            const Symbol = NotionDataReader.GetDataFromSingleSelectField(RelationData[0].properties.Symbol); // Get the symbol of the investment (to get its' live price)
             const OpenValue = this.CurrencyData[Symbol];
             const BuyValue = NotionDataReader.GetDataFromNumberField(OpenPosition.properties['Buy Price']);
             const Fee = NotionDataReader.GetDataFromNumberField(OpenPosition.properties.Fees);

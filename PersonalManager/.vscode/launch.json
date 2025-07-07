@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Main",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/Main.js",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "console": "externalTerminal"
+    },
+    {
+      "name": "DEV Launch GoogleDriveAPIWrapper",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/GoogleDrive.js",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "console": "externalTerminal"
+    }
+  ],
+  "compounds": []
+}
