@@ -88,3 +88,11 @@ typings/
 .dynamodb/
 
 .vs/
+
+client_secret_*.apps.googleusercontent.com.json
+
+PersonalManager/credentials_PC.json
+
+PersonalManager/credentials.json
+
+PersonalManager/token.json
