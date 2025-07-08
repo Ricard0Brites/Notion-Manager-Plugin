@@ -1,6 +1,6 @@
 
 require('dotenv').config();
-const { RequestDatabase, NotionDataReader, AddPage, DeletePage} = require('./src/Statics.js');
+const { RequestDatabase, NotionDataReader, AddPage, DeletePage, UpdatePage} = require('./src/Statics.js');
 const {SingleTextField,NumberField,RelationField, DateField, URLField} = require('./src/DataTypes.js');
 const { GoogleDrive } = require('./GoogleDrive.js');
 const { default: axios } = require('axios');
@@ -133,6 +133,20 @@ class ExpenseTransferer
                         - delete the local file.
                 */
                 let UrlToInsert = '';
+                
+                //Add Entry to backend database
+                let OBJToAdd = {
+                    ...SingleTextField(BackendDatabaseHeaders[0], Description),
+                    ...RelationField(BackendDatabaseHeaders[4], [Entity]),
+                    ...RelationField(BackendDatabaseHeaders[1], [Category]),
+                    ...DateField(BackendDatabaseHeaders[2], DateOfSpendage),
+                    ...NumberField(BackendDatabaseHeaders[5], AmountSpent),
+                    ...RelationField(BackendDatabaseHeaders[6], [Currency]),
+                    ...URLField(BackendDatabaseHeaders[3], UrlToInsert)
+                };
+
+                const NewPage = await AddPage(notion, this.#BackendTableID, OBJToAdd);
+
                 for(let File of Files)
                 {
                     if(File.type == 'file')
@@ -147,10 +161,8 @@ class ExpenseTransferer
                         UrlToInsert = 'https://drive.google.com/drive/folders/' + Cache.parent;
                     }
                 }
-
                 
-                //Add Entry to backend database
-                const OBJToAdd = {
+                OBJToAdd = {
                     ...SingleTextField(BackendDatabaseHeaders[0], Description),
                     ...RelationField(BackendDatabaseHeaders[4], [Entity]),
                     ...RelationField(BackendDatabaseHeaders[1], [Category]),
@@ -160,10 +172,11 @@ class ExpenseTransferer
                     ...URLField(BackendDatabaseHeaders[3], UrlToInsert)
                 };
 
-                const NewPage = await AddPage(notion, this.#BackendTableID, OBJToAdd);
+                //we have to update the page after creating it because the drive folder name is the id of the new page
+                await UpdatePage(notion, NewPage.id, OBJToAdd);
 
                 //Delete Page From Front-End Form 
-                await DeletePage(notion, NewPage.id);
+                await DeletePage(notion, BaseResponse.id);
             }
             
             //Deletes cached files

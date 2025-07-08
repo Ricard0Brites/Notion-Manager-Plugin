@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <PackageJsonDependenciesGoogleCloudLocalAuth Condition="$(PackageJsonDependenciesGoogleCloudLocalAuth) == ''">^2.1.0</PackageJsonDependenciesGoogleCloudLocalAuth>
+    <PackageJsonDependenciesNotionhqClient Condition="$(PackageJsonDependenciesNotionhqClient) == ''">^3.1.3</PackageJsonDependenciesNotionhqClient>
+    <PackageJsonDependenciesAxios Condition="$(PackageJsonDependenciesAxios) == ''">^1.9.0</PackageJsonDependenciesAxios>
+    <PackageJsonDependenciesDotenv Condition="$(PackageJsonDependenciesDotenv) == ''">^16.5.0</PackageJsonDependenciesDotenv>
+    <PackageJsonDependenciesErrorLib Condition="$(PackageJsonDependenciesErrorLib) == ''">^2.0.2</PackageJsonDependenciesErrorLib>
+    <PackageJsonDependenciesGoogleapis Condition="$(PackageJsonDependenciesGoogleapis) == ''">^105.0.0</PackageJsonDependenciesGoogleapis>
+    <PackageJsonDependenciesOpen Condition="$(PackageJsonDependenciesOpen) == ''">^10.1.2</PackageJsonDependenciesOpen>
+    <PackageJsonName Condition="$(PackageJsonName) == ''">personalmanager</PackageJsonName>
+    <PackageJsonVersion Condition="$(PackageJsonVersion) == ''">1.0.0</PackageJsonVersion>
+    <PackageJsonDescription Condition="$(PackageJsonDescription) == ''"></PackageJsonDescription>
+    <PackageJsonMain Condition="$(PackageJsonMain) == ''">index.js</PackageJsonMain>
+    <PackageJsonScriptsTest Condition="$(PackageJsonScriptsTest) == ''">echo "Error: no test specified" &amp;&amp; exit 1</PackageJsonScriptsTest>
+    <PackageJsonKeywords Condition="$(PackageJsonKeywords) == ''">[]</PackageJsonKeywords>
+    <PackageJsonAuthor Condition="$(PackageJsonAuthor) == ''"></PackageJsonAuthor>
+    <PackageJsonLicense Condition="$(PackageJsonLicense) == ''">ISC</PackageJsonLicense>
+    <PackageJsonType Condition="$(PackageJsonType) == ''">commonjs</PackageJsonType>
+    <PackageJsonDevdependenciesEslint Condition="$(PackageJsonDevdependenciesEslint) == ''">^9.29.0</PackageJsonDevdependenciesEslint>
+  </PropertyGroup>
+</Project>
